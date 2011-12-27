@@ -1,5 +1,5 @@
 require "picotest/version"
-
+require "picotest/core"
+require "picotest/autotest"
 module Picotest
-  # Your code goes here...
 end
