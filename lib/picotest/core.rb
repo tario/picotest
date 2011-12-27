@@ -20,7 +20,14 @@ module Picotest
     end
 
     def _raise(expected)
-      lambda{|m,*i|}
+      lambda{|m,*i|
+        begin
+          m.call(*i)
+          false
+        rescue expected
+          true
+        end
+      }
     end
   end
 end
