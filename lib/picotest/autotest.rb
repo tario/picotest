@@ -9,5 +9,8 @@ failing_fixt = fixt("always fails", [] => lambda{|x| false})
 fixt("test should raise Fail when condition returns false", 
   [lambda{}] => _raise(Fail) ).test(failing_fixt.method(:test))
 
+fixt("test should raise Fail when condition returns false", 
+  [lambda{}] => _raise(Fail, "Test fail: always fails") ).test(failing_fixt.method(:test))
+
 end
 
