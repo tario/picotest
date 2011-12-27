@@ -1,5 +1,24 @@
+class Proc
+  def to_test_proc
+    lambda { |m,*i|
+      o = m.call(*i)
+      self.call(o)
+    }
+  end
+end
+
 module Picotest
   class Fail < Exception
+  end
+
+  class RaiseAssert
+    def initialize(&blk)
+      @blk = blk
+    end
+
+    def to_test_proc
+      @blk
+    end
   end
 
   class Fixture
@@ -9,7 +28,7 @@ module Picotest
 
     def test(m)
       @fxtdata.each do |i,o|
-        o.call(m,*i)
+        raise Picotest::Fail unless o.to_test_proc.call(m,*i)
       end
     end
   end
@@ -20,7 +39,7 @@ module Picotest
     end
 
     def _raise(expected)
-      lambda{|m,*i|
+      RaiseAssert.new {|m,*i|
         begin
           m.call(*i)
           false
