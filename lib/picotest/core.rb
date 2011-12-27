@@ -38,13 +38,13 @@ module Picotest
       Fixture.new(fxtdata)
     end
 
-    def _raise(expected)
+    def _raise(expected, expected_message = nil)
       RaiseAssert.new {|m,*i|
         begin
           m.call(*i)
           false
-        rescue expected
-          true
+        rescue expected => e
+            true
         end
       }
     end
