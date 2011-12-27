@@ -28,7 +28,7 @@ module Picotest
 
     def test(m)
       @fxtdata.each do |i,o|
-        raise Picotest::Fail unless o.to_test_proc.call(m,*i)
+        raise Picotest::Fail,"Test fail: always fails" unless o.to_test_proc.call(m,*i)
       end
     end
   end
@@ -44,7 +44,11 @@ module Picotest
           m.call(*i)
           false
         rescue expected => e
+          if expected_message
+            e.message == expected_message
+          else
             true
+          end
         end
       }
     end
