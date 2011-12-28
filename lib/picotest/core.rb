@@ -55,8 +55,11 @@ module Picotest
   end
   class << self
     def fixt(*args)
-      fxtdata = args[1]
-      Fixture.new(args[0],fxtdata)
+      if args.size==1
+        Fixture.new("",args.first)
+      else
+        Fixture.new(args.first,args.last)
+      end
     end
 
     def _raise(expected, expected_message = nil)
