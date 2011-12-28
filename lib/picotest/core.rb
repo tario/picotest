@@ -34,7 +34,14 @@ class Proc
   def to_test_proc
     lambda { |m,*i|
       o = m.call(*i)
-      self.call(o)
+
+      if i.size+1 == arity
+        self.call(o,*i)
+      elsif arity == 1
+        self.call(o)
+      else
+        raise RuntimeError, "wrong arity for lambda"
+      end
     }
   end
 end
