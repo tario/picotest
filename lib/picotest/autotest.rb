@@ -66,5 +66,9 @@ fixt("_set([1],[2],[3]) should pass with lambda{|x| [1,2,3].include? x}",
   [ lambda{|x| [1,2,3].include?(x) ? 4: nil} ] => _not_raise
 ).test( fixt(_set([1],[2],[3]) => 4).method(:test) )
 
+fixt("_set([1],[2],[3]) should pass with lambda{|x| [1,2,3].include? x}", 
+  [ lambda{|x| [1,2,3].include?(x) ? 4: nil} ] => _not_raise
+).test( fixt(_set(1,2,3) => 4).method(:test) )
+
 end
 
