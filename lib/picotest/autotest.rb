@@ -41,5 +41,17 @@ failing_fixt = fixt("always always fails", [] => lambda{|x| false})
 fixt("message of Fail should be 'Test fail: always always fails' when expectation title is 'always always fails'", 
   [lambda{}] => _raise(Fail, "Test fail: always always fails") ).test(failing_fixt.method(:test))
 
+failing_fixt = fixt([]=>lambda{|x|false})
+fixt("failing fixt with lambda{|x|false} and without fail message should fail", [lambda{}]=>_raise(Fail)).
+  test(failing_fixt.method(:test))
+
+passing_fixt = fixt("should not raise",[]=>lambda{|x|true})
+fixt("passing fixt with lambda{|x|true} should not fail", [lambda{}]=>_not_raise).
+  test(passing_fixt.method(:test))
+
+passing_fixt = fixt([]=>lambda{|x|true})
+fixt("passing fixt with lambda{|x|true} and without fail message should not fail", [lambda{}]=>_not_raise).
+  test(passing_fixt.method(:test))
+
 end
 
