@@ -81,7 +81,6 @@ module Picotest
     def test(m)
       @fxtdata.each do |k,o|
         if k.respond_to? :to_proc
-          require "pry"
           oracle = k.to_proc
           o.to_input_set.each do|_exp_o|
             i = oracle.call(_exp_o)
