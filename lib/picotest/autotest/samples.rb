@@ -22,12 +22,21 @@ module Picotest
 
 # normal test (as you could do the test)
 fixt([1] => 1, [2] => 4, [3] => 9, [4] => 16).test lambda{|x| x*x}
-fixt([1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.method(:sqrt)
-
 fixt(_set([1],[-1]) => 1, _set([2],[-2]) => 4, _set([3],[-3]) => 9, _set([4],[-4]) => 16).test lambda{|x| x*x}
+
+fixt([1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.method(:sqrt)
 
 fixt( _set(1,4,9,16,25) => lambda{|y,x| y**2==x}).test Math.method(:sqrt)
 fixt( lambda{|x| x**2} => _set(*(1..20))).test Math.method(:sqrt)
+
+fixt( _set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005}).test Math.method(:sqrt)
+
+# all last four togheter
+
+fixt( [1] => 1, [4] => 2, [9] => 3, [16] => 4,
+      _set(1,4,9,16,25) => lambda{|y,x| y**2==x}, 
+      lambda{|x| x**2} => _set(*(1..20)),
+      _set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005} ).test(Math.method(:sqrt))
 
 # picotest testing the test
 fixt(
