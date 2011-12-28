@@ -18,6 +18,14 @@ you should have received a copy of the gnu general public license
 along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 
 =end
+class Object
+  def to_test_proc
+    lambda{|m,*i|
+      self == m.call(*i)
+    }
+  end
+end
+
 class Proc
   def to_test_proc
     lambda { |m,*i|
