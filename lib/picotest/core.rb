@@ -24,6 +24,10 @@ class Object
       self == m.call(*i)
     }
   end
+
+  def to_input_set
+    Picotest::InputSet.new([self])
+  end
 end
 
 class Proc
@@ -37,6 +41,18 @@ end
 
 module Picotest
   class Fail < Exception
+  end
+
+  class InputSet
+    def initialize(array); @array = array; end
+
+    def to_input_set
+      self
+    end
+
+    def each(&blk)
+      @array.each(&blk)
+    end
   end
 
   class RaiseAssert
@@ -56,8 +72,12 @@ module Picotest
     end
 
     def test(m)
-      @fxtdata.each do |i,o|
-        raise Picotest::Fail,'Test fail: '+@fail_message unless o.to_test_proc.call(m,*i)
+      @fxtdata.each do |k,o|
+        k.to_input_set.each do|i|
+          unless o.to_test_proc.call(m,*i)
+            raise Picotest::Fail,'Test fail: '+@fail_message
+          end
+        end
       end
     end
   end
@@ -68,6 +88,10 @@ module Picotest
       else
         Fixture.new(args.first,args.last)
       end
+    end
+
+    def _set(*args)
+      InputSet.new(args)
     end
 
     def _not_raise
