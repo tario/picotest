@@ -42,20 +42,21 @@ module Picotest
   end
 
   class Fixture
-    def initialize(fxtdata)
+    def initialize(fail_message,fxtdata)
       @fxtdata=fxtdata
+      @fail_message=fail_message
     end
 
     def test(m)
       @fxtdata.each do |i,o|
-        raise Picotest::Fail,"Test fail: always fails" unless o.to_test_proc.call(m,*i)
+        raise Picotest::Fail,'Test fail: '+@fail_message unless o.to_test_proc.call(m,*i)
       end
     end
   end
   class << self
     def fixt(*args)
       fxtdata = args[1]
-      Fixture.new(fxtdata)
+      Fixture.new(args[0],fxtdata)
     end
 
     def _raise(expected, expected_message = nil)
