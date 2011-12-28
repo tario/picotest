@@ -53,5 +53,13 @@ passing_fixt = fixt([]=>lambda{|x|true})
 fixt("passing fixt with lambda{|x|true} and without fail message should not fail", [lambda{}]=>_not_raise).
   test(passing_fixt.method(:test))
 
+fixt("numeric assert should not fail", 
+  [lambda{|x|x}] => _not_raise,
+  [lambda{|x|1}] => _not_raise,
+  [lambda{|x|0}] => _raise(Fail)).test(
+  fixt([1] => 1).method(:test)
+  ) 
+
+
 end
 
