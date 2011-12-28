@@ -26,6 +26,8 @@ fixt([1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.method(:sqrt)
 
 fixt(_set([1],[-1]) => 1, _set([2],[-2]) => 4, _set([3],[-3]) => 9, _set([4],[-4]) => 16).test lambda{|x| x*x}
 
+fixt( _set(1,4,9,16,25) => lambda{|y,x| y**2==x}).test Math.method(:sqrt)
+
 # picotest testing the test
 fixt(
   [lambda{|x|x*x}] => _not_raise,
