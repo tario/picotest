@@ -62,6 +62,17 @@ module Picotest
       end
     end
 
+    def _not_raise
+      RaiseAssert.new {|m,*i|
+        begin
+          m.call(*i)
+          true
+        rescue
+          false
+        end
+      }
+    end
+
     def _raise(expected, expected_message = nil)
       RaiseAssert.new {|m,*i|
         begin
