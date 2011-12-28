@@ -96,11 +96,12 @@ module Picotest
           oracle = k.to_proc
           o.to_input_set.each do|_exp_o|
             i = oracle.call(_exp_o)
-            unless m.call(*i) == _exp_o
+            _o = m.call(*i)
+            unless _o == _exp_o
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
-              print "fail #{@fail_message}\n"
+              print "fail #{@fail_message}. Expected output:#{_exp_o} , received:#{_o}\n"
               end
             end 
           end
@@ -110,7 +111,7 @@ module Picotest
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
-              print "fail #{@fail_message}\n"
+              print "fail #{@fail_message}. Input: #{i.inspect}\n"
               end
             end
           end
