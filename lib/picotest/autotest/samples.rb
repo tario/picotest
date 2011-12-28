@@ -21,19 +21,19 @@ along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 module Picotest
 
 # normal test (as you could do the test)
-suite([1] => 1, [2] => 4, [3] => 9, [4] => 16).test lambda{|x| x*x}
-suite(_set([1],[-1]) => 1, _set([2],[-2]) => 4, _set([3],[-3]) => 9, _set([4],[-4]) => 16).test lambda{|x| x*x}
+suite("squared 1,2,3,4", [1] => 1, [2] => 4, [3] => 9, [4] => 16).test lambda{|x| x*x}
+suite("negative number elevated to 2",_set([1],[-1]) => 1, _set([2],[-2]) => 4, _set([3],[-3]) => 9, _set([4],[-4]) => 16).test lambda{|x| x*x}
 
-suite([1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.method(:sqrt)
+suite("sqrt of 1,4,9,16",[1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.method(:sqrt)
 
-suite( _set(1,4,9,16,25) => lambda{|y,x| y**2==x}).test Math.method(:sqrt)
-suite( lambda{|x| x**2} => _set(*(1..20))).test Math.method(:sqrt)
+suite("sqrt of pf 1,4,9,16,25", _set(1,4,9,16,25) => lambda{|y,x| y**2==x}).test Math.method(:sqrt)
+suite("sqrt of 1 to 20 elevated to 2", lambda{|x| x**2} => _set(*(1..20))).test Math.method(:sqrt)
 
-suite( _set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005}).test Math.method(:sqrt)
+suite("sqrt of 1 to 100",_set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005}).test Math.method(:sqrt)
 
 # all last four togheter
 
-suite( [1] => 1, [4] => 2, [9] => 3, [16] => 4,
+suite("sqrt", [1] => 1, [4] => 2, [9] => 3, [16] => 4,
       _set(1,4,9,16,25) => lambda{|y,x| y**2==x}, 
       lambda{|x| x**2} => _set(*(1..20)),
       _set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005} ).test(Math.method(:sqrt))
