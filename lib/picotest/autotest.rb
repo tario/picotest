@@ -37,5 +37,9 @@ message_fixture = fixt("Should raise Fail with expected message", [lambda{}] => 
 
 fixt("wrong fail message should raise fail", [failing_fixt.method(:test)] => _raise(Fail)).test message_fixture.method(:test) 
 
+failing_fixt = fixt("always always fails", [] => lambda{|x| false})
+fixt("message of Fail should be 'Test fail: always always fails' when expectation title is 'always always fails'", 
+  [lambda{}] => _raise(Fail, "Test fail: always always fails") ).test(failing_fixt.method(:test))
+
 end
 
