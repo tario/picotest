@@ -34,5 +34,16 @@ fixt(
     fixt([1] => 1, [2] => 4, [3] => 9, [4] => 16).method(:test)
   )
 
+# same as the previous but using another syntax
+fixt(
+  _set(
+    [lambda{|x|x*x}],
+    [lambda{|x|x**2}],
+    [lambda{|x| case x; when 1; 1; when 2; 4; when 3; 9; when 4; 16; end}]) => _not_raise,
+  [lambda{|x| case x; when 1; 1; when 2; 4; when 3; 9; when 4; 15; end}] => _raise(Fail)
+  ).test(
+    fixt([1] => 1, [2] => 4, [3] => 9, [4] => 16).method(:test)
+  )
+
 end
 
