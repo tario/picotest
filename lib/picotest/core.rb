@@ -76,20 +76,42 @@ module Picotest
     def initialize(fail_message,fxtdata)
       @fxtdata=fxtdata
       @fail_message=fail_message
+
+      @report = ENV["PICOTEST_REPORT"] == "1" ? true : false
+      @raise_fail = @report ? false : true
+      @run = ENV["PICOTEST_RUN"] == "1" ? true : false
     end
 
     def test(m)
+      return unless @run
+
+      if m.instance_of? Method
+        if m.owner == Picotest::Suite
+          m.receiver.instance_eval{@raise_fail = true}
+        end
+      end
+
       @fxtdata.each do |k,o|
         if k.respond_to? :to_proc
           oracle = k.to_proc
           o.to_input_set.each do|_exp_o|
             i = oracle.call(_exp_o)
-            raise Picotest::Fail,'Test fail: '+@fail_message if m.call(*i) != _exp_o
+            unless m.call(*i) == _exp_o
+              if @raise_fail
+              raise Picotest::Fail,'Test fail: '+@fail_message
+              else
+              print "fail #{@fail_message}\n"
+              end
+            end 
           end
         else
           k.to_input_set.each do|i|
             unless o.to_test_proc.call(m,*i)
+              if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
+              else
+              print "fail #{@fail_message}\n"
+              end
             end
           end
         end
