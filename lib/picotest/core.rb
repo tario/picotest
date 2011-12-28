@@ -72,7 +72,7 @@ module Picotest
     end
   end
 
-  class Fixture
+  class Suite
     def initialize(fail_message,fxtdata)
       @fxtdata=fxtdata
       @fail_message=fail_message
@@ -98,11 +98,11 @@ module Picotest
     end
   end
   class << self
-    def fixt(*args)
+    def suite(*args)
       if args.size==1
-        Fixture.new("",args.first)
+        Suite.new("",args.first)
       else
-        Fixture.new(args.first,args.last)
+        Suite.new(args.first,args.last)
       end
     end
 

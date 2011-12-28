@@ -22,53 +22,53 @@ along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 require "picotest/autotest/samples"
 
 module Picotest
-fixt("fixture should accept :test method", [] => lambda{|x| x.respond_to? :test}).test(method(:fixt))
+suite("suiteure should accept :test method", [] => lambda{|x| x.respond_to? :test}).test(method(:suite))
 
-fixt("raise Fail when tested method raises Fail", 
+suite("raise Fail when tested method raises Fail", 
   [1] => _raise(Fail) ).test(lambda{|x|raise Fail})
 
-failing_fixt = fixt("always fails", [] => lambda{|x| false})
-fixt("test should raise Fail when condition returns false", 
-  [lambda{}] => _raise(Fail) ).test(failing_fixt.method(:test))
+failing_suite = suite("always fails", [] => lambda{|x| false})
+suite("test should raise Fail when condition returns false", 
+  [lambda{}] => _raise(Fail) ).test(failing_suite.method(:test))
 
-fixt("message of Fail should be 'Test fail: always fails' when expectation title is 'always fails'", 
-  [lambda{}] => _raise(Fail, "Test fail: always fails") ).test(failing_fixt.method(:test))
+suite("message of Fail should be 'Test fail: always fails' when expectation title is 'always fails'", 
+  [lambda{}] => _raise(Fail, "Test fail: always fails") ).test(failing_suite.method(:test))
 
-failing_fixt = fixt("unexpected message", [] => lambda{|x| false})
-message_fixture = fixt("Should raise Fail with expected message", [lambda{}] => _raise(Fail, "Test fail: expected message") )
+failing_suite = suite("unexpected message", [] => lambda{|x| false})
+message_suiteure = suite("Should raise Fail with expected message", [lambda{}] => _raise(Fail, "Test fail: expected message") )
 
-fixt("wrong fail message should raise fail", [failing_fixt.method(:test)] => _raise(Fail)).test message_fixture.method(:test) 
+suite("wrong fail message should raise fail", [failing_suite.method(:test)] => _raise(Fail)).test message_suiteure.method(:test) 
 
-failing_fixt = fixt("always always fails", [] => lambda{|x| false})
-fixt("message of Fail should be 'Test fail: always always fails' when expectation title is 'always always fails'", 
-  [lambda{}] => _raise(Fail, "Test fail: always always fails") ).test(failing_fixt.method(:test))
+failing_suite = suite("always always fails", [] => lambda{|x| false})
+suite("message of Fail should be 'Test fail: always always fails' when expectation title is 'always always fails'", 
+  [lambda{}] => _raise(Fail, "Test fail: always always fails") ).test(failing_suite.method(:test))
 
-failing_fixt = fixt([]=>lambda{|x|false})
-fixt("failing fixt with lambda{|x|false} and without fail message should fail", [lambda{}]=>_raise(Fail)).
-  test(failing_fixt.method(:test))
+failing_suite = suite([]=>lambda{|x|false})
+suite("failing suite with lambda{|x|false} and without fail message should fail", [lambda{}]=>_raise(Fail)).
+  test(failing_suite.method(:test))
 
-passing_fixt = fixt("should not raise",[]=>lambda{|x|true})
-fixt("passing fixt with lambda{|x|true} should not fail", [lambda{}]=>_not_raise).
-  test(passing_fixt.method(:test))
+passing_suite = suite("should not raise",[]=>lambda{|x|true})
+suite("passing suite with lambda{|x|true} should not fail", [lambda{}]=>_not_raise).
+  test(passing_suite.method(:test))
 
-passing_fixt = fixt([]=>lambda{|x|true})
-fixt("passing fixt with lambda{|x|true} and without fail message should not fail", [lambda{}]=>_not_raise).
-  test(passing_fixt.method(:test))
+passing_suite = suite([]=>lambda{|x|true})
+suite("passing suite with lambda{|x|true} and without fail message should not fail", [lambda{}]=>_not_raise).
+  test(passing_suite.method(:test))
 
-fixt("numeric assert should not fail", 
+suite("numeric assert should not fail", 
   [lambda{|x|x}] => _not_raise,
   [lambda{|x|1}] => _not_raise,
   [lambda{|x|0}] => _raise(Fail)).test(
-  fixt([1] => 1).method(:test)
+  suite([1] => 1).method(:test)
   ) 
 
-fixt("_set([1],[2],[3]) should pass with lambda{|x| [1,2,3].include? x}", 
+suite("_set([1],[2],[3]) should pass with lambda{|x| [1,2,3].include? x}", 
   [ lambda{|x| [1,2,3].include?(x) ? 4: nil} ] => _not_raise
-).test( fixt(_set([1],[2],[3]) => 4).method(:test) )
+).test( suite(_set([1],[2],[3]) => 4).method(:test) )
 
-fixt("_set([1],[2],[3]) should pass with lambda{|x| [1,2,3].include? x}", 
+suite("_set([1],[2],[3]) should pass with lambda{|x| [1,2,3].include? x}", 
   [ lambda{|x| [1,2,3].include?(x) ? 4: nil} ] => _not_raise
-).test( fixt(_set(1,2,3) => 4).method(:test) )
+).test( suite(_set(1,2,3) => 4).method(:test) )
 
 end
 

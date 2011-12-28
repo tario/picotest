@@ -21,40 +21,40 @@ along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 module Picotest
 
 # normal test (as you could do the test)
-fixt([1] => 1, [2] => 4, [3] => 9, [4] => 16).test lambda{|x| x*x}
-fixt(_set([1],[-1]) => 1, _set([2],[-2]) => 4, _set([3],[-3]) => 9, _set([4],[-4]) => 16).test lambda{|x| x*x}
+suite([1] => 1, [2] => 4, [3] => 9, [4] => 16).test lambda{|x| x*x}
+suite(_set([1],[-1]) => 1, _set([2],[-2]) => 4, _set([3],[-3]) => 9, _set([4],[-4]) => 16).test lambda{|x| x*x}
 
-fixt([1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.method(:sqrt)
+suite([1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.method(:sqrt)
 
-fixt( _set(1,4,9,16,25) => lambda{|y,x| y**2==x}).test Math.method(:sqrt)
-fixt( lambda{|x| x**2} => _set(*(1..20))).test Math.method(:sqrt)
+suite( _set(1,4,9,16,25) => lambda{|y,x| y**2==x}).test Math.method(:sqrt)
+suite( lambda{|x| x**2} => _set(*(1..20))).test Math.method(:sqrt)
 
-fixt( _set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005}).test Math.method(:sqrt)
+suite( _set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005}).test Math.method(:sqrt)
 
 # all last four togheter
 
-fixt( [1] => 1, [4] => 2, [9] => 3, [16] => 4,
+suite( [1] => 1, [4] => 2, [9] => 3, [16] => 4,
       _set(1,4,9,16,25) => lambda{|y,x| y**2==x}, 
       lambda{|x| x**2} => _set(*(1..20)),
       _set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005} ).test(Math.method(:sqrt))
 
 # picotest testing the test
-fixt(
+suite(
   [lambda{|x|x*x}] => _not_raise,
   [lambda{|x|x**2}] => _not_raise,
   [lambda{|x| case x; when 1; 1; when 2; 4; when 3; 9; when 4; 16; end}] => _not_raise,
   [lambda{|x| case x; when 1; 1; when 2; 4; when 3; 9; when 4; 15; end}] => _raise(Fail)
   ).test(
-    fixt([1] => 1, [2] => 4, [3] => 9, [4] => 16).method(:test)
+    suite([1] => 1, [2] => 4, [3] => 9, [4] => 16).method(:test)
   )
 
 # same as the previous but using another syntax
-fixt(
+suite(
   _set(
     [lambda{|x|x*x}],[lambda{|x|x**2}], [lambda{|x| case x; when 1; 1; when 2; 4; when 3; 9; when 4; 16; end}]) => _not_raise,
   [lambda{|x| case x; when 1; 1; when 2; 4; when 3; 9; when 4; 15; end}] => _raise(Fail)
   ).test(
-    fixt([1] => 1, [2] => 4, [3] => 9, [4] => 16).method(:test)
+    suite([1] => 1, [2] => 4, [3] => 9, [4] => 16).method(:test)
   )
 
 end
