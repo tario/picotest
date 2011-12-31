@@ -22,6 +22,12 @@ along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 require "picotest/autotest/samples"
 
 module Picotest
+
+require "pry"
+binding.pry
+if ENV['PICOTEST_AUTOTEST'] == '1'
+
+
 suite("suiteure should accept :test method", [] => lambda{|x| x.respond_to? :test}).test(method(:suite))
 
 suite("raise Fail when tested method raises Fail", 
@@ -78,5 +84,6 @@ end
 
 suite( 1 => 1, 2 => 4, 3 => 9).test( X.new.method(:foo).mock( :@bar => mock(:foo => lambda{|x|x*x} ) )) 
 
+end
 end
 

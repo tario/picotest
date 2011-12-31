@@ -20,6 +20,7 @@ along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 =end
 module Picotest
 
+if ENV['PICOTEST_AUTOTEST'] == '1'
 # normal test (as you could do the test)
 suite("squared 1,2,3,4", [1] => 1, [2] => 4, [3] => 9, [4] => 16).test lambda{|x| x*x}
 suite("negative number elevated to 2",_set([1],[-1]) => 1, _set([2],[-2]) => 4, _set([3],[-3]) => 9, _set([4],[-4]) => 16).test lambda{|x| x*x}
@@ -57,5 +58,6 @@ suite(
     suite([1] => 1, [2] => 4, [3] => 9, [4] => 16).method(:test)
   )
 
+end
 end
 
