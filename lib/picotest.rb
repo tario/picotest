@@ -18,6 +18,7 @@ you should have received a copy of the gnu general public license
 along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 
 =end
+require "picotest/picomock"
 require "picotest/version"
 require "picotest/core"
 require "picotest/autotest"

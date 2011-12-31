@@ -70,5 +70,13 @@ suite("_set([1],[2],[3]) should pass with lambda{|x| [1,2,3].include? x}",
   [ lambda{|x| [1,2,3].include?(x) ? 4: nil} ] => _not_raise
 ).test( suite(_set(1,2,3) => 4).method(:test) )
 
+class X
+  def foo(*x)
+    @bar.foo(*x)
+  end
+end
+
+suite( 1 => 1, 2 => 4, 3 => 9).test( X.new.method(:foo).mock( :@bar => mock(:foo => lambda{|x|x*x} ) )) 
+
 end
 
