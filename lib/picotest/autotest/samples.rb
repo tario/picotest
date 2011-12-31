@@ -30,7 +30,7 @@ suite("sqrt of 1,4,9,16",[1] => 1, [4] => 2, [9] => 3, [16] => 4).test Math.meth
 suite("sqrt of pf 1,4,9,16,25", _set(1,4,9,16,25) => lambda{|y,x| y**2==x}).test Math.method(:sqrt)
 suite("sqrt of 1 to 20 elevated to 2", lambda{|x| x**2} => _set(*(1..20))).test Math.method(:sqrt)
 
-suite("sqrt of 1 to 100",_set(*(1..100)) => lambda{|y,x| y**2 - x.to_f < 0.000000005}).test Math.method(:sqrt)
+suite("sqrt of 1 to 100",_set(*(1..100)) => lambda{|y,x| (y**2 - x.to_f).abs < 0.000000005}).test Math.method(:sqrt)
 
 # all last four togheter
 
