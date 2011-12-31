@@ -73,9 +73,10 @@ module Picotest
   end
 
   class Suite
-    def initialize(fail_message,fxtdata)
+    def initialize(fail_message,fxtdata,position)
       @fxtdata=fxtdata
       @fail_message=fail_message
+      @position = position
 
       @report = ENV["PICOTEST_REPORT"] == "1" ? true : false
       @raise_fail = @report ? false : true
@@ -102,7 +103,8 @@ module Picotest
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
-              print "fail #{@fail_message}. Expected output:#{_exp_o} , received:#{_o}\n"
+              print "fail #{@fail_message}. Expected output:#{_exp_o} , received:#{_o}
+  suite at #{@position}\n"
               end
             end 
           end
@@ -112,7 +114,8 @@ module Picotest
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
-              print "fail #{@fail_message}. Input: #{i.inspect}\n"
+              print "fail #{@fail_message}. Input: #{i.inspect}
+  suite at #{@position}\n"
               end
             end
           end
@@ -123,9 +126,9 @@ module Picotest
   class << self
     def suite(*args)
       if args.size==1
-        Suite.new("",args.first)
+        Suite.new("",args.first,caller[0])
       else
-        Suite.new(args.first,args.last)
+        Suite.new(args.first,args.last,caller[0])
       end
     end
 
