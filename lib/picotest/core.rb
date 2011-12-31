@@ -90,6 +90,7 @@ module Picotest
       if m.instance_of? Method
         if m.owner == Picotest::Suite
           m.receiver.instance_eval{@raise_fail = true}
+          m.receiver.instance_eval{@emulate_fail = false}
         end
       end
 
