@@ -80,6 +80,7 @@ module Picotest
       @report = ENV["PICOTEST_REPORT"] == "1" ? true : false
       @raise_fail = @report ? false : true
       @run = ENV["PICOTEST_RUN"] == "1" ? true : false
+      @emulate_fail = ENV["PICOTEST_FAIL"] == "1" ? true : false
     end
 
     def test(m)
@@ -97,7 +98,7 @@ module Picotest
           o.to_input_set.each do|_exp_o|
             i = oracle.call(_exp_o)
             _o = m.call(*i)
-            unless _o == _exp_o
+            if not _o == _exp_o or @emulate_fail
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
@@ -107,7 +108,7 @@ module Picotest
           end
         else
           k.to_input_set.each do|i|
-            unless o.to_test_proc.call(m,*i)
+            if not o.to_test_proc.call(m,*i) or @emulate_fail
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
