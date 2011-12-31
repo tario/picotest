@@ -171,7 +171,8 @@ module Picotest
       end
     end
   end
-  class << self
+
+  module GlobalMethods
     def suite(*args)
       if args.size==1
         Suite.new("",args.first,caller[0])
@@ -211,3 +212,8 @@ module Picotest
     end
   end
 end
+
+class Object
+  include Picotest::GlobalMethods
+end
+
