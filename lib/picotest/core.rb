@@ -20,9 +20,7 @@ along with picotest.  if not, see <http://www.gnu.org/licenses/>.
 =end
 class Object
   def to_test_proc
-    lambda{|m,*i|
-      self == m.call(*i)
-    }
+    Picotest::ConstantTestProc.new(self)
   end
 
   def to_input_set
@@ -32,21 +30,46 @@ end
 
 class Proc
   def to_test_proc
-    lambda { |m,*i|
-      o = m.call(*i)
-
-      if i.size+1 == arity
-        self.call(o,*i)
-      elsif arity == 1
-        self.call(o)
-      else
-        raise RuntimeError, "wrong arity for lambda"
-      end
-    }
+    Picotest::ProcTestProc.new(self)
   end
 end
 
 module Picotest
+  class ProcTestProc
+    attr_accessor :expectation_text
+
+    def initialize(inner_proc)
+      @inner_proc = inner_proc
+      @expectation_text = ""
+    end
+
+    def call(m,*i)
+      o = m.call(*i)
+
+      if i.size+1 == @inner_proc.arity
+        @inner_proc.call(o,*i)
+      elsif arity == 1
+        @inner_proc.call(o)
+      else
+        raise RuntimeError, "wrong arity for lambda"
+      end
+    end
+  end
+
+  class ConstantTestProc
+    def initialize(const)
+      @const = const
+    end
+
+    def call(m,*i)
+      @const == m.call(*i)
+    end
+
+    def expectation_text
+      @const.inspect
+    end
+  end
+
   class Fail < Exception
   end
 
@@ -63,12 +86,18 @@ module Picotest
   end
 
   class RaiseAssert
-    def initialize(&blk)
+    attr_reader :expectation_text    
+    def initialize(ext,&blk)
       @blk = blk
+      @expectation_text = ext
     end
 
     def to_test_proc
-      @blk
+      self
+    end
+
+    def call(*x)
+      @blk.call(*x)
     end
   end
 
@@ -104,19 +133,37 @@ module Picotest
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
+
+              location = if m.respond_to?(:source_location)
+                m.source_location
+              end
+
               print "fail #{@fail_message}. Expected output:#{_exp_o} , received:#{_o}
-  suite at #{@position}\n"
+  suite at #{@position}
+  test at #{caller[0]}
+  #{location ? "method location at "+location.join(":") : "" }
+"
               end
             end 
           end
         else
           k.to_input_set.each do|i|
-            if not o.to_test_proc.call(m,*i) or @emulate_fail
+            test_proc = o.to_test_proc
+            if not test_proc.call(m,*i) or @emulate_fail
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
-              print "fail #{@fail_message}. Input: #{i.inspect}
-  suite at #{@position}\n"
+
+              location = if m.respond_to?(:source_location)
+                m.source_location
+              end
+
+              print "fail #{@fail_message}. Input: #{i.inspect}, Expected: #{test_proc.expectation_text}
+  suite at #{@position}
+  test at #{caller[0]}
+  #{location ? "method location at "+location.join(":") : "" }
+
+"
               end
             end
           end
@@ -138,7 +185,7 @@ module Picotest
     end
 
     def _not_raise
-      RaiseAssert.new {|m,*i|
+      RaiseAssert.new("not raise exception") {|m,*i|
         begin
           m.call(*i)
           true
@@ -149,7 +196,7 @@ module Picotest
     end
 
     def _raise(expected, expected_message = nil)
-      RaiseAssert.new {|m,*i|
+      RaiseAssert.new("raise #{expected}") {|m,*i|
         begin
           m.call(*i)
           false
