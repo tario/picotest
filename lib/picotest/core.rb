@@ -122,6 +122,7 @@ module Picotest
           m.receiver.instance_eval{@emulate_fail = false}
         end
       end
+      m = m.to_proc
 
       test_fail = false
 
