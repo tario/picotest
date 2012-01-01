@@ -123,6 +123,8 @@ module Picotest
         end
       end
 
+      test_fail = false
+
       @fxtdata.each do |k,o|
         if k.respond_to? :to_proc
           oracle = k.to_proc
@@ -130,6 +132,8 @@ module Picotest
             i = oracle.call(_exp_o)
             _o = m.call(*i)
             if not _o == _exp_o or @emulate_fail
+              test_fail = true
+
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
@@ -150,6 +154,8 @@ module Picotest
           k.to_input_set.each do|i|
             test_proc = o.to_test_proc
             if not test_proc.call(m,*i) or @emulate_fail
+              test_fail = true
+
               if @raise_fail
               raise Picotest::Fail,'Test fail: '+@fail_message
               else
@@ -169,6 +175,11 @@ module Picotest
           end
         end
       end
+
+      unless test_fail
+        print "Test sucessfull at #{caller[0]}\n" if @report
+      end
+
     end
   end
 
