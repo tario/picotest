@@ -105,6 +105,59 @@ When valid inputs can be generated from output (i.e. float 1.0 output correspond
       _set([1,2,3],[3,4,5],[4,6,7],[5,6,7]) => lambda{|y,x1,x2,x3| y == x1+x2+x3}
       ).test X.new.method(:sum)
 
+=== Example 8: Mocking instance variable
+
+  class X
+    def foo(data)
+      data.split(";")[@fieldno].to_f
+    end
+  end
+
+  suite(hash).test X.new.method(:foo).mock(:@fieldno => 2)
+
+=== Example 9: Mocking method on receiver object
+
+  class X
+    attr_accessor :fieldno
+    def foo(data)
+      data.split(";")[fieldno].to_f
+    end
+  end
+
+  suite(hash).test X.new.method(:foo).mock(:fieldno => 2)
+
+=== Example 9: Mock objects
+
+  class X
+    attr_accessor :another_object
+    def foo(data)
+      data.split(";")[another_object.fieldno].to_f
+    end
+  end
+
+  suite(hash).test X.new.method(:foo).mock(:another_object => mock(:fieldno => 2) )
+
+=== Example 10: Mocking method on receiver object
+
+  class X
+    attr_accessor :another_object
+    def foo(data)
+      another_object.invented_here_split(data,";")[@fieldno].to_f
+    end
+  end
+
+  # you can specify the implementatioin of methods using lambdas
+  suite(hash).test X.new.method(:foo).mock(
+    :another_object => mock(:invented_here_split => lambda{|str,sep| str.split(sep) }), 
+    :@fieldno => 2 )
+
+  # Since :split.to_proc is equivalent to lambda{|str,sep| str.split(sep) }, you can also use:
+  suite(hash).test X.new.method(:foo).mock(
+    :another_object => mock(:invented_here_split => :split.to_proc), 
+    :@fieldno => 2 )
+
+
+
 
 == Copying
 
