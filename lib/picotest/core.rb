@@ -48,7 +48,7 @@ module Picotest
 
       if i.size+1 == @inner_proc.arity
         @inner_proc.call(o,*i)
-      elsif arity == 1
+      elsif @inner_proc.arity == 1
         @inner_proc.call(o)
       else
         raise RuntimeError, "wrong arity for lambda"
