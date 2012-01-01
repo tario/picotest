@@ -1,0 +1,111 @@
+= Picotest - simple reduced tests
+
+Picotest is a gem which allows to write complete test suites in a few lines, targeted primarily to test separated methods, algorithms or little snippets of code
+
+== Installation
+
+The install is as simple as execute the well-known gem install:
+
+sudo gem install picotest
+
+== Known Limitations & Issues
+
+* Reverse oracle test only can be compared using exact equals (see sqrt example)
+* Metaprogramming of input/output pairs are ugly
+
+== Usage
+
+To use picotest you should write suites using suite method, each suite is defined by a hash and an optional
+description, the keys of the hash are used as input for the method and the corresponding values as expected output
+
+For example, to specify that the method receiving 1 should return 1, receiving 4 should return 2 and receiving 9 should return 3, use the following syntax:
+
+  suite(1 => 1, 4 => 2, 9 => 3)
+
+Or:
+
+  suite("integer sqrt", 1 => 1, 4 => 2, 9 => 3)
+
+After that, you should specify the test:
+
+  suite("integer sqrt", 1 => 1, 4 => 2, 9 => 3).test(Math.method(:sqrt))
+
+To run test, you should set the environment variable PICOTEST_RUN to 1
+
+=== Environment variables
+
+All environments are activated setting their value to 1, other values distinct from 1 will be ignored
+
+PICOTEST_RUN        enables the execution of test
+PICOTEST_REPORT     enables reports of test on standard output and disables Picotest::Fail exceptions when test fails
+PICOTEST_AUTOTEST   enables tests of picotest itself
+PICOTEST_FAIL       simulate failure of all tests, for picotest test purpose
+
+== Code Examples
+
+See samples directory under the gem root
+
+=== Example 1: basic usage of suite and test method
+
+  class X
+    def foo(data)
+      data.split(";")[2].to_f
+    end
+  end
+
+  suite( "aaa;xxx;1.0;999" => 1.0, ";;3.2" => 3.2).test X.new.method(:foo)
+
+=== Example 2: Input sets
+
+Both -2 and 2 should evaluate to 4 on lambda{|x|x*x}
+
+  suite(_set(-2,2) => 4).test lambda{|x|x*x}
+
+=== Example 3: Oracle testing
+
+Using a lambda as value on the hash can be used to specify a rule to validate output-input pairs, useful for oracle testing
+
+  suite(4 => lambda{|y,x| y*y == x}).test Math.method(:sqrt)
+
+=== Example 4: Oracle testing with input sets
+
+This time, the validation rule must considerate the imprecision of floats and check using a error margin
+
+  suite(_set(1,2,3,4,5) => lambda{|y,x| (y*y - x).abs<0.00001}).test Math.method(:sqrt)
+  suite(_set(*(1..100) ) => lambda{|y,x| (y*y - x).abs<0.00001}).test Math.method(:sqrt)
+
+=== Example 5: Reversed oracle
+
+When valid inputs can be generated from output (i.e. float 1.0 output correspond to string "aaa;xxx;1.0;" input)
+
+  class X
+    def foo(data)
+      data.split(";")[2].to_f
+    end
+  end
+
+  suite( lambda{|x| ";;#{x}"} => _set(*(1..20).map(&:to_f)) ).test X.new.method(:foo)
+
+=== Example 6: Testing methods of input objects
+
+  suite( "a b" => ["a","b"]).test :split
+  suite( lambda{|x|x.join " "} => _set(["a","b"], ["x","y","z","1"], ["aaa","bbb"]) ).test :split
+
+=== Example 7: Testing multiple argument inputs
+
+  class X
+    def sum(*x)
+      x.inject{|a,b| a+b}
+    end
+  end
+
+  suite( 1 => 1, [1,2] => 3, [1,2,3] => 6 ).test X.new.method(:sum)
+  suite(_set(*(1..100)) => lambda{|y,x| y == x},
+      _set([1,2],[3,4],[4,6],[5,6]) => lambda{|y,x1,x2| y == x1+x2},
+      _set([1,2,3],[3,4,5],[4,6,7],[5,6,7]) => lambda{|y,x1,x2,x3| y == x1+x2+x3}
+      ).test X.new.method(:sum)
+
+
+== Copying
+
+Copyright (c) 2012 Dario Seminara, released under the GPL License (see LICENSE)
