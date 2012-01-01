@@ -23,8 +23,6 @@ require "picotest/autotest/samples"
 
 module Picotest
 
-require "pry"
-binding.pry
 if ENV['PICOTEST_AUTOTEST'] == '1'
 
 
