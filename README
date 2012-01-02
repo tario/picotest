@@ -126,7 +126,7 @@ When valid inputs can be generated from output (i.e. float 1.0 output correspond
 
   suite(hash).test X.new.method(:foo).mock(:fieldno => 2)
 
-=== Example 9: Mock objects
+=== Example 10: Mock objects
 
   class X
     attr_accessor :another_object
@@ -137,7 +137,7 @@ When valid inputs can be generated from output (i.e. float 1.0 output correspond
 
   suite(hash).test X.new.method(:foo).mock(:another_object => mock(:fieldno => 2) )
 
-=== Example 10: Mocking method on receiver object
+=== Example 11: Mocking method on receiver object
 
   class X
     attr_accessor :another_object
@@ -157,7 +157,17 @@ When valid inputs can be generated from output (i.e. float 1.0 output correspond
     :@fieldno => 2 )
 
 
+=== Example 12: Exceptions
 
+  class X
+    def foo(a)
+      raise ArgumentError unless a.kind_of? Numeric
+
+      a*2
+    end
+  end
+
+  suite(1 => 2, 2 => 4, 3 => 6, "00" => _raise(ArgumentError)).test(X.new.method(:foo))
 
 == Copying
 

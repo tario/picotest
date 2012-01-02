@@ -34,3 +34,13 @@ suite(_set(*(1..100)) => lambda{|y,x| y == x},
       ).test X.new.method(:sum)
 
 
+class X
+  def foo(a)
+    raise ArgumentError unless a.kind_of? Numeric
+
+    a*2
+  end
+end
+
+suite(1 => 2, 2 => 4, 3 => 6, "00" => _raise(ArgumentError)).test(X.new.method(:foo))
+
