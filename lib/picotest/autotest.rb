@@ -2,7 +2,7 @@
 
 This file is part of the picotest project, http://github.com/tario/picotest
 
-Copyright (c) 2011 Roberto Dario Seminara <robertodarioseminara@gmail.com>
+Copyright (c) 2012 Roberto Dario Seminara <robertodarioseminara@gmail.com>
 
 picotest is free software: you can redistribute it and/or modify
 it under the terms of the gnu general public license as published by
