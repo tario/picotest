@@ -15,13 +15,15 @@ spec = Gem::Specification.new do |s|
   s.homepage = "http://github.com/tario/picotest"
   s.has_rdoc = true
   s.extra_rdoc_files = [ 'README' ]
-  s.files = Dir.glob("{benchmarks,examples,lib,spec}/**/*") +[ 'LICENSE', 'AUTHORS', 'README', 'Rakefile', 'CHANGELOG' ]
+  s.files = Dir.glob("{samples,lib}/**/*") +[ 'LICENSE', 'AUTHORS', 'README', 'Rakefile', 'CHANGELOG' ]
 end
 
 desc 'Run tests'
-
-RSpec::Core::RakeTask.new("test:units") do |t|
-  t.pattern= 'spec/**/*.rb'
+task :test do
+  ENV['PICOTEST_AUTOTEST'] = '1'
+  ENV['PICOTEST_REPORT'] = '1'
+  ENV['PICOTEST_RUN'] = '1'
+  require "picotest"
 end
 
 desc 'Generate RDoc'
