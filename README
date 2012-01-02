@@ -13,6 +13,7 @@ sudo gem install picotest
 * Reverse oracle test only can be compared using exact equals (see sqrt example)
 * Metaprogramming of input/output pairs are ugly
 * Oracle testing does not allow expectation test making difficult to debug failing tests
+* Complete lack of RDoc
 
 == Usage
 
